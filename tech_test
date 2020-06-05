@@ -1,0 +1,309 @@
+package com.example.tolu.admin;
+
+
+import android.os.Bundle;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class tech_test extends AppCompatActivity {
+   //API for page 1
+    String url1 = "https://jsonmock.hackerrank.com/api/article_users/search?page=1";
+
+    //API for page 2
+    String url2 = "https://jsonmock.hackerrank.com/api/article_users/search?page=2";
+
+    ArrayList<String> username = new ArrayList<>();
+  ArrayList<Integer> submission_count = new ArrayList<>();
+   ArrayList<Integer> comment_count = new ArrayList<>();
+    ArrayList<Integer> created_at = new ArrayList<>();
+
+    ArrayAdapter<String> adapter;
+
+
+    Button userN, userC, userD;
+    ListView list;
+    TextView text;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tech_test);
+        
+        //Disable test button until data is fully retrived from the two pages of the API
+        userN = (Button)findViewById(R.id.userN);
+        userN.setEnabled(false);
+        userC = (Button)findViewById(R.id.userC);
+        userC.setEnabled(false);
+        userD = (Button)findViewById(R.id.userD);
+        userD.setEnabled(false);
+
+        //Layout to display retrieved data from functions 
+        text = (TextView)findViewById(R.id.text);
+        list = (ListView)findViewById(R.id.list);
+
+
+
+        //Retrieve data from page 1 of API using Volley REST client library
+        getData1();
+
+
+    }
+
+    //Retrieve data from page 1 of API using Volley REST client library
+    private  void getData1(){
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        //1
+        StringRequest request = new StringRequest(Request.Method.GET, url1, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    JSONArray data = jsonObject.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            //Gets username
+                            String userN = object.getString("username");
+                            username.add(userN);
+
+                            //Gets Submission count
+                            int subM = object.getInt("submission_count");
+                            submission_count.add(subM);
+
+                            //Gets Comment count
+                            int comm = object.getInt("comment_count");
+                            comment_count.add(comm);
+
+                            //Gets Created_at
+                            int create = object.getInt("created_at");
+                            created_at.add(create);
+
+                        }
+
+                    //Retrieve data from page 2 of API using Volley REST client library
+                        getData2();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new LinkedHashMap<>();
+                header.put("Content-Type", "application/x-www-form-urlencoded");
+                return header;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(request);
+
+    }
+
+    //Retrieve data from page 2 of API after Page one has been retrieved using volley REST client
+    private  void getData2(){
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        //1
+        StringRequest request = new StringRequest(Request.Method.GET, url1, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    JSONArray data = jsonObject.getJSONArray("data");
+
+                    for (int i = 0; i < data.length(); i++){
+                        JSONObject object = data.getJSONObject(i);
+
+                        //Gets username
+                        String userN = object.getString("username");
+                        username.add(userN);
+
+                        //Gets Submission count
+                        int subM = object.getInt("submission_count");
+                        submission_count.add(subM);
+
+                        //Gets Comment count
+                        int comm = object.getInt("comment_count");
+                        comment_count.add(comm);
+
+                        //Gets Created_at
+                        int create = object.getInt("created_at");
+                        created_at.add(create);
+
+                    }
+                    //Enable test buttons after data is retrieved from the two pages of api
+                    userC.setEnabled(true);
+                    userD.setEnabled(true);
+                    userN.setEnabled(true);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new LinkedHashMap<>();
+                header.put("Content-Type", "application/x-www-form-urlencoded");
+                return header;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(request);
+
+    }
+
+
+    public List<String> getUsernames(int threshold) {
+        List<String> user = new ArrayList<>();
+        for (int i = 0; i < submission_count.size(); i++){
+            if(submission_count.get(i)>=threshold){
+               String us = username.get(i);
+               user.add(us);
+            }
+        }
+        return user;
+
+    }
+
+    public String getUsernameWithHighestCommentCount(){
+         int greatest = 0;
+         int subm_great = submission_count.get(0);
+
+        for (int i = 1; i < submission_count.size(); i++){
+           int sb = submission_count.get(i);
+           if(sb > subm_great){
+           greatest = i;
+           subm_great = sb;
+           }
+        }
+        String usern = username.get(greatest);
+        return usern;
+    }
+
+
+    public  List<String> getUsernamesSortedByRecordDate(int threshold) {
+        
+        //Sort List based on threshold
+        List<String> username1 = new ArrayList<>();
+        List<Integer> created_at1 = new ArrayList<>();
+        int temp;
+        String stem;
+        for (int i = 0; i < created_at.size(); i++){
+            if(created_at.get(i)>=threshold){
+
+                String us = username.get(i);
+                username1.add(us);
+
+                int cr = created_at.get(i);
+                created_at1.add(cr);
+
+
+            }
+        }
+        String[] username0 = username1.toArray(new String[username1.size()]);
+        Integer[] created_at0 = created_at1.toArray(new Integer[created_at1.size()]);
+
+        //Sort list in ascending order
+        for (int i = 0; i < created_at0.length; i++) {
+            for (int j = i+1; j < created_at0.length; j++) {
+                if(created_at0[i] > created_at0[j]) {
+
+                    temp = created_at0[i];
+                    created_at0[i] = created_at0[j];
+                    created_at0[j] = temp;
+
+                    stem = username0[i];
+                    username0[i] = username0[j];
+                    username0[j] = stem;
+
+
+                }
+            }
+        }
+        List<String> user = new ArrayList<>();
+        user.add(username0[0]);
+        for (int i = 2; i < username0.length; i++){
+          if(i % 2 == 0){
+              user.add(username0[i]);
+          }
+        }
+
+
+        return user;
+
+
+
+    }
+
+    //Click button to get users with submission count greater than 100 and display on ListView
+    public void getUser(View view){
+        List<String> user = getUsernames(100);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,user);
+        list.setAdapter(adapter);
+    }
+
+    // Click button to get user with highest comment and display in TextView
+    public void getCom(View view){
+       String use =  getUsernameWithHighestCommentCount();
+       text.setText(use);
+    }
+
+
+
+    //Click button and display list of the authors sorted  in ascending order by when their record was created with a threshold of 1205248131.
+    public void getDat(View view){
+        List<String> user = getUsernamesSortedByRecordDate(1205248131);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,user);
+        list.setAdapter(adapter);
+    }
+
+
+}
