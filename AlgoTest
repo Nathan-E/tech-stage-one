@@ -12,7 +12,7 @@ public class AlgoTest{
    ArrayList<Integer> comment_count = new ArrayList<>();    //List of comment count from API
     ArrayList<Integer> created_at = new ArrayList<>();      //List of created_at from API
 
-
+// The list of most active authors according to a set threshold
 public Static List<String> getUsernames(int threshold) {
         List<String> user = new ArrayList<>();
         for (int i = 0; i < submission_count.size(); i++){
