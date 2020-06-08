@@ -41,7 +41,7 @@ public Static List<String> getUsernames(int threshold) {
         return usern;
     }
 
-
+   //The list of the authors sorted by when their record was created according to a set threshold.
     public Static List<String> getUsernamesSortedByRecordDate(int threshold) {
          List<String> username1 = new ArrayList<>();
         List<Integer> created_at1 = new ArrayList<>();
