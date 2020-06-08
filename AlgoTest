@@ -28,10 +28,10 @@ public Static List<String> getUsernames(int threshold) {
 //The author with the highest comment count.
     public Static String getUsernameWithHighestCommentCount(){
          int greatest = 0;
-         int subm_great = submission_count.get(0);
+         int subm_great = comment_count.get(0);
 
-        for (int i = 1; i < submission_count.size(); i++){
-           int sb = submission_count.get(i);
+        for (int i = 1; i < comment_count.size(); i++){
+           int sb = comment_count.get(i);
            if(sb > subm_great){
            greatest = i;
            subm_great = sb;
@@ -90,9 +90,7 @@ public Static List<String> getUsernames(int threshold) {
 
         return user;
 
-
-
-    }
+}
 
    
 
