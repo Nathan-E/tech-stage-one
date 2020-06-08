@@ -1,0 +1,100 @@
+package com.example.tolu;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class AlgoTest{
+   
+    ArrayList<String> username = new ArrayList<>();         //List of username from API
+  ArrayList<Integer> submission_count = new ArrayList<>();  //List of submission count from API
+   ArrayList<Integer> comment_count = new ArrayList<>();    //List of comment count from API
+    ArrayList<Integer> created_at = new ArrayList<>();      //List of created_at from API
+
+
+public Static List<String> getUsernames(int threshold) {
+        List<String> user = new ArrayList<>();
+        for (int i = 0; i < submission_count.size(); i++){
+            if(submission_count.get(i)>=threshold){
+               String us = username.get(i);
+               user.add(us);
+            }
+        }
+        return user;
+
+    }
+
+    public Static String getUsernameWithHighestCommentCount(){
+         int greatest = 0;
+         int subm_great = submission_count.get(0);
+
+        for (int i = 1; i < submission_count.size(); i++){
+           int sb = submission_count.get(i);
+           if(sb > subm_great){
+           greatest = i;
+           subm_great = sb;
+           }
+        }
+        String usern = username.get(greatest);
+        return usern;
+    }
+
+
+    public Static List<String> getUsernamesSortedByRecordDate(int threshold) {
+         List<String> username1 = new ArrayList<>();
+        List<Integer> created_at1 = new ArrayList<>();
+        int temp;
+        String stem;
+        for (int i = 0; i < created_at.size(); i++){
+            if(created_at.get(i)>=threshold){
+
+                String us = username.get(i);
+                username1.add(us);
+
+                int cr = created_at.get(i);
+                created_at1.add(cr);
+
+
+            }
+        }
+        String[] username0 = username1.toArray(new String[username1.size()]);
+        Integer[] created_at0 = created_at1.toArray(new Integer[created_at1.size()]);
+
+       
+        for (int i = 0; i < created_at0.length; i++) {
+            for (int j = i+1; j < created_at0.length; j++) {
+                if(created_at0[i] > created_at0[j]) {
+
+                    temp = created_at0[i];
+                    created_at0[i] = created_at0[j];
+                    created_at0[j] = temp;
+
+                    stem = username0[i];
+                    username0[i] = username0[j];
+                    username0[j] = stem;
+
+
+                }
+            }
+        }
+        List<String> user = new ArrayList<>();
+        user.add(username0[0]);
+        for (int i = 2; i < username0.length; i++){
+          if(i % 2 == 0){
+              user.add(username0[i]);
+          }
+        }
+
+
+        return user;
+
+
+
+    }
+
+   
+
+
+}
+
