@@ -1,10 +1,11 @@
 package service.Implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import dtos.ApiResponseDTO;
 import dtos.ArticleUserDTO;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import service.ArticleUserService;
 
 import java.io.BufferedReader;
@@ -68,11 +69,10 @@ public class ArticleUserServiceImpl implements ArticleUserService {
         String fullUrl = String.format(baseUrl+basePath,1);
         String resp = makeHttpGetRequest(fullUrl);
 
-        System.out.println("got here");
 
         ApiResponseDTO apiResponse;
         try {
-            ObjectMapper objectMapper;
+
             apiResponse = new ObjectMapper().readValue(resp, ApiResponseDTO.class);
             if(apiResponse!=null && apiResponse.getData().size()>0){
                 apiData.addAll(apiResponse.getData());
@@ -87,6 +87,8 @@ public class ArticleUserServiceImpl implements ArticleUserService {
                 }
             }
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return apiData;

@@ -1,33 +1,59 @@
 //package socklaundering;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SockLaundry {
 
+    static int possibleNumOfSocks;
+
+    public SockLaundry() {
+        possibleNumOfSocks = 0;
+    }
+
+
     //Do not delete or edit this method, you can only modify the block
     public int getMaximumPairOfSocks(int noOfWashes, int[] cleanPile, int[] dirtyPile) {
         //You can edit from here down
-        int maxNumofPair = 0;
-        Map<Integer,Integer> integerMap = storeCleanPileCount(cleanPile);
-        for(int j=0;j<dirtyPile.length;j++){
-            if(noOfWashes==0){
+        List<Integer>  i1 = new ArrayList<>();
+        int washesSoFar = 0;
+        Map<Integer,Integer> cleanPairCounts = possibleSocksFromCleanPile(cleanPile);
+
+
+        for (int i = 0; i < dirtyPile.length; i++) {
+            if (washesSoFar < noOfWashes) {
+                if (cleanPairCounts.containsKey(dirtyPile[i])) {
+                    cleanPairCounts.replace(dirtyPile[i], cleanPairCounts.get(dirtyPile[i]) + 1);
+                    int pairCount = cleanPairCounts.get(dirtyPile[i]);
+                    if (pairCount % 2 == 0) {
+                        if(i1.indexOf(dirtyPile[i]) != -1){
+                            washesSoFar = washesSoFar + 2;
+                            i1.remove(i1.indexOf(dirtyPile[i]));
+                        }else{
+                            washesSoFar++;
+                        }
+                        possibleNumOfSocks++;
+                    }else{
+                        i1.add(dirtyPile[i]);
+                    }
+                } else {
+                    cleanPairCounts.put(dirtyPile[i], 1);
+                    i1.add(dirtyPile[i]);
+                }
+            } else {
                 break;
             }
-
-            if(integerMap.containsKey(dirtyPile[j])){
-
-            }
-
         }
-        return maxNumofPair;
+        return possibleNumOfSocks;
     }
 
     /**
      * You can create various helper methods
      * */
 
-    private Map<Integer,Integer> storeCleanPileCount(int[] cleanPile){
+    Map<Integer,Integer> possibleSocksFromCleanPile(int[] cleanPile){
 
         Map<Integer,Integer> integerMap = new HashMap<>();
         for(int i=0;i<cleanPile.length;i++){
@@ -35,12 +61,20 @@ public class SockLaundry {
             if(integerMap.containsKey(sockColor)){
                 int initialCount = integerMap.get(sockColor);
                 integerMap.put(sockColor,initialCount+1);
+
             }else{
                 integerMap.put(sockColor,1);
+            }
+
+            int pairCount = integerMap.get(cleanPile[i]);
+            if (pairCount % 2 == 0) {
+                possibleNumOfSocks++;
             }
         }
 
         return integerMap;
 
     }
+
+
 }
