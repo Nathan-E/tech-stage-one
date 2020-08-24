@@ -1,6 +1,6 @@
 # Authors
 
-In this challenge, the REST API contains information about a collection of users and articles they created. Given the threshold value, the goal is to use the API to get the following 
+In this challenge, the REST API contains information about a collection of users and articles they created. Given the threshold value, the goal is to make API calls  to get the following 
 
 1. The list of most active authors according to a set threshold
 2. The author with the highest comment count.
